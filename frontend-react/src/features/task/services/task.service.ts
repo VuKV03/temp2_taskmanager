@@ -31,6 +31,9 @@ export const taskService = {
 
   archive: (id: number) => api.delete<ApiResponse<{ message: string }>>(`/tasks/${id}`),
 
+  bulkArchive: (ids: number[]) =>
+    api.delete<ApiResponse<{ message: string; archivedCount: number }>>('/tasks/bulk', { data: { ids } }),
+
   updateStatus: (id: number, status: Task['status']) =>
     api.patch<ApiResponse<Task>>(`/tasks/${id}/status`, { status }),
 

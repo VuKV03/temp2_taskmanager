@@ -103,7 +103,13 @@ export interface CreateTaskPayload {
   tagIds?: number[];
 }
 
-export type UpdateTaskPayload = Partial<Omit<CreateTaskPayload, 'parentTaskId'>>;
+// `dueDate` widens to allow explicit `null` — clearing it (e.g. "remove from
+// Today" without archiving) is a real update, not just an omitted field.
+// Backend already supports this: `update()` does
+// `dto.dueDate !== undefined ? (dto.dueDate ? new Date(...) : null) : (untouched)`.
+export type UpdateTaskPayload = Partial<Omit<CreateTaskPayload, 'parentTaskId' | 'dueDate'>> & {
+  dueDate?: string | null;
+};
 
 export interface ReorderTaskItem {
   id: number;

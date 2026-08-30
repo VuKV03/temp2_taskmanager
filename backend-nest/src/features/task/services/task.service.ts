@@ -164,6 +164,35 @@ export class TaskService {
     });
   }
 
+  /** Bulk version of `archive()` — same ownership rule (`assertTaskAccess`), one transaction. */
+  async archiveMany(user: JwtPayload, ids: number[]): Promise<{ archivedCount: number }> {
+    const tasks = await this.taskRepository.findByIds(ids);
+    const byId = new Map(tasks.map((t) => [Number(t.id), t]));
+
+    const targets: Task[] = [];
+    for (const id of ids) {
+      const task = byId.get(id);
+      if (!task) throw new AppException(ERROR_CODES.TASK_001);
+      this.assertTaskAccess(user, task);
+      targets.push(task);
+    }
+
+    await this.dataSource.transaction(async (manager) => {
+      for (const task of targets) task.isArchived = true;
+      await manager.getRepository(Task).save(targets);
+      for (const task of targets) {
+        await this.activityLogger.log(manager, {
+          taskId: task.id,
+          userId: user.id,
+          action: 'archived',
+          taskTitle: task.title,
+        });
+      }
+    });
+
+    return { archivedCount: targets.length };
+  }
+
   async reorder(user: JwtPayload, dto: ReorderTasksDto): Promise<TaskResponse[]> {
     const ids = dto.items.map((item) => item.id);
     const tasks = await this.taskRepository.findByIds(ids);

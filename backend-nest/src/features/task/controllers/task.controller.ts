@@ -26,6 +26,7 @@ import { UpdateStatusDto } from '../dto/update-status.dto.js';
 import { UpdateAssigneeDto } from '../dto/update-assignee.dto.js';
 import { ReorderTasksDto } from '../dto/reorder-tasks.dto.js';
 import { ReplaceTagsDto } from '../dto/replace-tags.dto.js';
+import { BulkDeleteTasksDto } from '../dto/bulk-delete-tasks.dto.js';
 
 @ApiTags('tasks')
 @ApiBearerAuth('access-token')
@@ -70,6 +71,15 @@ export class TaskController {
     @Body() dto: UpdateTaskDto,
   ) {
     return this.taskService.update(user, id, dto);
+  }
+
+  // Static route registered before ':id' so it isn't swallowed by it (see reorder() above).
+  @Delete('bulk')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Archive (soft delete) multiple tasks at once' })
+  async archiveMany(@CurrentUser() user: JwtPayload, @Body() dto: BulkDeleteTasksDto) {
+    const { archivedCount } = await this.taskService.archiveMany(user, dto.ids);
+    return { message: 'Tasks archived', archivedCount };
   }
 
   @Delete(':id')

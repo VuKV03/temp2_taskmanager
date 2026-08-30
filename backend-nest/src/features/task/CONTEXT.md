@@ -20,6 +20,7 @@ depend on it.
 - `GET /tasks/:id` — Detail view (+ subtasks count, tags)
 - `PATCH /tasks/:id` — Update
 - `DELETE /tasks/:id` — Soft delete (`is_archived = true`)
+- `DELETE /tasks/bulk` — Soft delete multiple (body `{ ids: number[] }`, registered before `:id` to avoid route collision); same per-task ownership check as single delete, one transaction, `TASK_001` if any id isn't found/accessible
 - `PATCH /tasks/:id/status` — Change status (state machine, own transaction)
 - `PATCH /tasks/:id/assignee` — Assign (`@Roles('admin')`)
 - `PATCH /tasks/reorder` — Bulk reorder (registered before `:id` to avoid route collision)

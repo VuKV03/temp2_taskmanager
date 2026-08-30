@@ -47,6 +47,10 @@
 
 **Không dùng màu làm tín hiệu duy nhất.** Mỗi badge luôn có chữ kèm theo — người mù màu chiếm khoảng 8% nam giới.
 
+### Chế độ sáng / tối
+
+Switch cạnh chuông thông báo trong header (`ThemeToggle`). Toàn bộ token màu ở trên có bản đối ứng cho nền tối (`:root.dark` trong `index.css`) — mọi utility class tham chiếu qua biến CSS nên tự đổi theo, không cần biến thể `dark:` rải rác trong component. Lựa chọn lưu ở `localStorage`, áp dụng trước khi trang vẽ (script inline trong `index.html`) để không nháy sáng khi tải lại trang.
+
 ### Typography
 
 | Token | Size / Weight | Dùng cho |
@@ -73,25 +77,25 @@
 ```
 ┌────────────────────────────────────────────────────────────┐
 │  Header (56px)                                             │
-│  [☰] Task Manager        [🔍 Tìm]    [🔔 3]  [Avatar ▾]    │
-├───────────────┬────────────────────────────────────────────┤
-│               │                                            │
-│  Sidebar      │  Content                                   │
-│  (240px)      │  (max-width 1200px, padding 24px)          │
-│               │                                            │
-│  ▸ Hôm nay    │                                            │
-│  ▸ Tất cả     │                                            │
-│  ▸ Thống kê   │                                            │
-│  ▸ Lịch sử    │                                            │
-│  ───────────  │                                            │
-│  DANH SÁCH    │                                            │
-│  • Cá nhân    │                                            │
-│  • Công việc  │                                            │
-│  + Thêm       │                                            │
-│  ───────────  │                                            │
-│  ▸ Người dùng │  ← chỉ hiện khi role = admin               │
-│               │                                            │
-└───────────────┴────────────────────────────────────────────┘
+│  [☰] Task Manager   [🔍 Tìm] [🌙 Switch] [🔔 3] [Avatar ▾] │
+├────────────────────────┬─────────────────────────────────┤
+│                        │                                 │
+│  Sidebar               │  Content                        │
+│  (240px)               │  (max-width 1200px, padding 24px)│
+│                        │                                 │
+│  ▸ Hôm nay             │                                 │
+│  ▸ Danh sách công việc │                                 │
+│  ▸ Lịch sử             │                                 │
+│  ▸ Thống kê            │                                 │
+│  ───────────           │                                 │
+│  DANH SÁCH             │                                 │
+│  • Cá nhân             │                                 │
+│  • Công việc           │                                 │
+│  + Thêm                │                                 │
+│  ───────────           │                                 │
+│  ▸ Người dùng          │  ← chỉ hiện khi role = admin    │
+│                        │                                 │
+└────────────────────────┴─────────────────────────────────┘
 ```
 
 **Responsive:**
@@ -153,57 +157,74 @@
 ### 2. Công việc hôm nay
 
 ```
-┌────────────────────────────────────────────────────────┐
-│  Hôm nay                          Thứ Sáu, 28/08/2026  │
-│                                                        │
-│  ┌────────┐ ┌────────┐ ┌────────┐                     │
-│  │   5    │ │   2    │ │   1    │                     │
-│  │ Hôm nay│ │Đã xong │ │Quá hạn │                     │
-│  └────────┘ └────────┘ └────────┘                     │
-│                                                        │
-│  ⚠ QUÁ HẠN (1)                                        │
-│  ┌──────────────────────────────────────────────────┐ │
-│  │ ☐  Gửi báo cáo tháng 7          🔴 Cao          │ │
-│  │    Công việc · Quá hạn 3 ngày   #Gấp            │ │
-│  └──────────────────────────────────────────────────┘ │
-│                                                        │
-│  HÔM NAY (5)                          [+ Thêm việc]   │
-│  ┌──────────────────────────────────────────────────┐ │
-│  │ ☐  Họp team                     🟡 Trung bình   │ │
-│  │    Công việc · 14:00 · 1/3 việc con             │ │
-│  ├──────────────────────────────────────────────────┤ │
-│  │ ☑  Viết tài liệu API            🟠 Cao          │ │
-│  │    ~~Đã hoàn thành lúc 09:12~~                  │ │
-│  └──────────────────────────────────────────────────┘ │
-└────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────┐
+│  Hôm nay                                Thứ Sáu, 28/08/2026  │
+│                                                                │
+│  ┌────────┐ ┌────────┐ ┌────────┐                             │
+│  │   5    │ │   2    │ │   1    │                             │
+│  │ Hôm nay│ │Đã xong │ │Quá hạn │                             │
+│  └────────┘ └────────┘ └────────┘                             │
+│                                                                │
+│  ☑ Đã chọn 2 công việc              [📅 Bỏ khỏi hôm nay]      │
+│                                                                │
+│  ⚠ QUÁ HẠN (1)                                                │
+│  ┌──────────────────────────────────────────────────────────┐│
+│  │☐│Tiêu đề            │Danh sách│Trạng thái│Ưu tiên│Hạn│Hành động││
+│  │▌☐│Gửi báo cáo tháng 7│Công việc│Cần làm   │🔴 Cao │25/8│▶ ✏ 📅││
+│  └──────────────────────────────────────────────────────────┘│
+│                                                                │
+│  HÔM NAY (5)                            [+ Thêm việc]         │
+│  ┌──────────────────────────────────────────────────────────┐│
+│  │☐│Họp team           │Công việc│Đang làm  │🟡 TB  │28/8│▶ ✏ 📅││
+│  │☑│Viết tài liệu API  │Công việc│Hoàn thành│🟠 Cao │28/8│▶ ✏ 📅││
+│  └──────────────────────────────────────────────────────────┘│
+└──────────────────────────────────────────────────────────────┘
 ```
 
-- **Quá hạn luôn nằm trên**, có viền trái đỏ 3px
-- Tick checkbox → gạch ngang + mờ dần, không biến mất khỏi danh sách (người dùng cần thấy mình đã làm gì)
-- Dữ liệu lấy nguyên từ `GET /tasks/today`, FE không tự lọc theo ngày
+- Danh sách hiển thị **dạng bảng** (không phải card như trước), dùng chung component bảng với màn "Danh sách công việc" — cột: checkbox chọn, Tiêu đề, Danh sách, Trạng thái, Ưu tiên, Hạn chót, Hành động
+- **Quá hạn luôn nằm ở bảng riêng phía trên**, có viền trái đỏ 3px trên ô đầu mỗi dòng
+- Cột **Hành động** có 3 nút: ▶ **Bắt đầu làm**, ✏ **Chỉnh sửa**, 📅 **Bỏ khỏi hôm nay**
+- **"Bỏ khỏi hôm nay" không phải xoá** — chỉ gỡ hạn chót (`dueDate = null`) khỏi task, task vẫn còn nguyên trong "Danh sách công việc". Nút dùng icon lịch-gạch-chéo và màu xanh (không phải đỏ), dialog xác nhận nói rõ điều này. Có thể chọn nhiều dòng (kể cả xen giữa 2 bảng Quá hạn/Hôm nay) rồi bỏ hàng loạt.
+- **▶ Bắt đầu làm**: yêu cầu task đã có "Thời lượng ước tính (phút)" — chưa có thì báo lỗi, không mở gì cả. Có thời lượng thì: (1) tự chuyển trạng thái task sang "Đang làm", (2) mở đồng hồ đếm ngược bằng đúng số phút đó — xem mục "Đồng hồ đếm ngược" bên dưới. Nút bị mờ/disable nếu task đã "Hoàn thành" hoặc "Đã huỷ".
+- **"Thêm việc"** không mở form tạo trống — mở drawer chọn từ các task có sẵn (lọc theo trạng thái/ưu tiên/danh sách + tìm kiếm), chọn 1 task sẽ gán hạn chót = hôm nay. Có nút "Tạo mới" thoát sang form tạo thật nếu task cần chưa tồn tại.
+- Dữ liệu lấy nguyên từ `GET /tasks/today`, FE không tự lọc theo ngày, và **không phân trang** (trang này vốn dùng để xem hết việc trong ngày, không phải duyệt theo trang)
 - Empty state: hình minh hoạ + "Hôm nay không có việc nào. Nghỉ ngơi thôi!" + nút thêm việc
+
+**Đồng hồ đếm ngược (▶ Bắt đầu làm):**
+
+- Ưu tiên hiển thị bằng **Document Picture-in-Picture** (Chrome/Edge) — một cửa sổ nổi thật sự, luôn nằm trên cùng, vẫn hiển thị kể cả khi chuyển sang tab/ứng dụng khác. Trình duyệt bắt buộc hiện một dòng nguồn gốc nhỏ ("localhost:...") trên cửa sổ này vì lý do bảo mật chống giả mạo — không có cách nào tắt được, đây là đánh đổi đã được chấp nhận để có được khả năng nổi xuyên tab.
+- Trình duyệt không hỗ trợ Document PiP (Firefox, Safari) → dùng phương án dự phòng: một thẻ nổi kéo-thả tự do ngay trong trang (`position: fixed`), không có thanh địa chỉ nào cả, nhưng chỉ tồn tại trong tab đang mở.
+- Đồng hồ có nút Tạm dừng/Tiếp tục, Đặt lại, phát 2 tiếng "bíp" và chuyển viền sang đỏ khi hết giờ.
 
 ---
 
 ### 3. Danh sách công việc
 
 ```
-┌────────────────────────────────────────────────────────┐
-│  Công việc                            [+ Thêm việc]    │
-│                                                        │
-│  [🔍 Tìm...] [Trạng thái ▾][Ưu tiên ▾][Nhãn ▾] [Xoá]  │
-│                                                        │
-│  ⣿ ☐  Thiết kế database        🟠 Cao   30/08  #DB    │
-│  ⣿ ☐  Viết API spec            🟡 TB    31/08         │
-│  ⣿ ☐  Dựng CI/CD               ⚪ Thấp   —            │
-│                                                        │
-│  Hiển thị 1–20 / 47        [‹ 1 2 3 ›]                │
-└────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────┐
+│  Công việc                                    [+ Thêm việc]  │
+│                                                                │
+│  [🔍 Tìm...] [Trạng thái ▾] [Ưu tiên ▾]                       │
+│                                                                │
+│  ☑ Đã chọn 2 công việc                    [🗑 Xoá đã chọn]    │
+│                                                                │
+│  ┌──────────────────────────────────────────────────────────┐│
+│  │☐│Tiêu đề         │Danh sách│Trạng thái│Ưu tiên│Hạn │Hành động││
+│  ├──────────────────────────────────────────────────────────┤│
+│  │☑│Thiết kế database│Công việc│Cần làm   │🟠 Cao │30/8│▶ ✏ 🗑││
+│  │☑│Viết API spec    │Công việc│Cần làm   │🟡 TB  │31/8│▶ ✏ 🗑││
+│  │☐│Dựng CI/CD       │Công việc│Cần làm   │⚪ Thấp│ —  │▶ ✏ 🗑││
+│  └──────────────────────────────────────────────────────────┘│
+│                                                                │
+│  Hiển thị 1–20 / 47   Số dòng/trang [20 ▾]      [‹ 1/3 ›]     │
+└──────────────────────────────────────────────────────────────┘
 ```
 
-- `⣿` là tay cầm kéo-thả (dnd-kit), chỉ hiện khi hover
-- Bộ lọc đồng bộ với URL → link chia sẻ được, F5 không mất
-- Kéo-thả cập nhật lạc quan; lỗi thì trả về vị trí cũ kèm toast
+- Danh sách là **bảng thật có cột**, không còn card kéo-thả sắp xếp thủ công như trước — cột: checkbox, Tiêu đề, Danh sách, Trạng thái, Ưu tiên, Hạn chót, Hành động
+- Cột **Hành động**: ▶ Bắt đầu làm (chuyển "Đang làm" + mở đồng hồ đếm ngược, cần task đã có thời lượng ước tính — xem mục 2), ✏ Chỉnh sửa (mở lại form tạo/sửa), 🗑 Xoá (archive — khác với "Bỏ khỏi hôm nay" ở màn Hôm nay, ở đây xoá thật)
+- **Chọn nhiều + xoá nhiều**: tick checkbox nhiều dòng → thanh "Đã chọn N công việc" hiện ra kèm nút xoá hàng loạt, có dialog xác nhận
+- **Phân trang thật**: chọn số dòng/trang 10/20/50/100, điều hướng trang trước/sau — cả `page` và `limit` đồng bộ với URL
+- Bộ lọc Trạng thái/Ưu tiên/Nhãn hiển thị dạng **nút dropdown** (bấm vào mới xổ ra danh sách chọn nhiều), không phải dãy chip bấm trực tiếp; đồng bộ với URL → link chia sẻ được, F5 không mất
 - Empty khi có filter: "Không có việc nào khớp bộ lọc" + nút xoá lọc
 - Empty khi chưa có gì: "Chưa có công việc nào" + nút thêm
 
@@ -372,6 +393,6 @@ Mọi trang có tải dữ liệu **bắt buộc** xử lý đủ 4 trạng thá
 - Mọi nút chỉ có icon phải có `aria-label`
 - Checkbox task: `aria-label="Đánh dấu hoàn thành: {tiêu đề}"`
 - Modal/drawer: focus trap, `Esc` để đóng, trả focus về nút mở
-- Kéo-thả dnd-kit bật sensor bàn phím (Space để nhấc, mũi tên để di chuyển)
+- Kéo-thả sắp xếp danh sách ở sidebar (dnd-kit) bật sensor bàn phím (Space để nhấc, mũi tên để di chuyển) — bảng công việc ở màn Hôm nay/Danh sách công việc không còn kéo-thả, dùng checkbox + nút Hành động thay thế
 - Tương phản chữ/nền tối thiểu 4.5:1
 - Vùng chạm tối thiểu 44×44px trên mobile

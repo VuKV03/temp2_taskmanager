@@ -275,6 +275,7 @@ Types: image/jpeg, image/png, image/webp, application/pdf,
 | GET | `/tasks/:id` | Detail (+ subtasks, tags, counts) | Yes |
 | PATCH | `/tasks/:id` | Update task | Yes |
 | DELETE | `/tasks/:id` | Archive task (soft) | Yes |
+| DELETE | `/tasks/bulk` | Archive nhiều task cùng lúc (body `{ ids: number[] }`) | Yes |
 | PATCH | `/tasks/:id/status` | Change status | Yes |
 | PATCH | `/tasks/:id/assignee` | Assign to user | Admin |
 | PATCH | `/tasks/reorder` | Bulk update `sort_order` | Yes |

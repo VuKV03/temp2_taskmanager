@@ -67,7 +67,7 @@ export const TaskListSidebar = () => {
       </NavLink>
       <NavLink to={ROUTES.TASKS} className={quickLinkClass}>
         <ListTodo className="h-4 w-4" />
-        Tất cả công việc
+        Danh sách công việc
       </NavLink>
       <NavLink to={ROUTES.HISTORY} className={quickLinkClass}>
         <History className="h-4 w-4" />

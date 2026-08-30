@@ -27,6 +27,8 @@ interface TaskFormModalProps {
   onClose: () => void;
   task?: Task;
   defaultListId?: number;
+  /** Datetime-local string (`yyyy-MM-dd'T'HH:mm`) to pre-fill "Hạn chót" for a new task — e.g. Today's "Thêm việc". */
+  defaultDueDate?: string;
 }
 
 function toDatetimeLocal(iso: string | null): string {
@@ -34,7 +36,7 @@ function toDatetimeLocal(iso: string | null): string {
   return DateTime.fromISO(iso).toFormat("yyyy-MM-dd'T'HH:mm");
 }
 
-export const TaskFormModal = ({ open, onClose, task, defaultListId }: TaskFormModalProps) => {
+export const TaskFormModal = ({ open, onClose, task, defaultListId, defaultDueDate }: TaskFormModalProps) => {
   const isEdit = !!task;
   const { data: lists } = useLists();
   const { mutate: createTask, isPending: isCreating } = useCreateTask();
@@ -55,7 +57,7 @@ export const TaskFormModal = ({ open, onClose, task, defaultListId }: TaskFormMo
       description: task?.description ?? '',
       listId: task?.list ? String(task.list.id) : defaultListId ? String(defaultListId) : '',
       priority: (task?.priority ?? 'medium') as TaskPriority,
-      dueDate: toDatetimeLocal(task?.dueDate ?? null),
+      dueDate: task?.dueDate ? toDatetimeLocal(task.dueDate) : (defaultDueDate ?? ''),
       estimateMinutes: task?.estimateMinutes ? String(task.estimateMinutes) : '',
     },
   });

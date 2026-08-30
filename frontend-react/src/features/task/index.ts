@@ -1,6 +1,8 @@
 export { TodayPage } from './pages/TodayPage';
 export { TaskListPage } from './pages/TaskListPage';
 export { TaskDetailPage } from './pages/TaskDetailPage';
+export { TaskTimerFloatingPanel } from './components/TaskTimerFloatingPanel';
+export { TaskTimerPipHost } from './components/TaskTimerPipHost';
 export { useTasks } from './hooks/useTasks';
 export { useTask } from './hooks/useTask';
 export { useTodayTasks } from './hooks/useTodayTasks';
@@ -8,6 +10,9 @@ export { useCreateTask } from './hooks/useCreateTask';
 export { useUpdateTask } from './hooks/useUpdateTask';
 export { useUpdateTaskStatus } from './hooks/useUpdateTaskStatus';
 export { useDeleteTask } from './hooks/useDeleteTask';
+export { useBulkDeleteTasks } from './hooks/useBulkDeleteTasks';
+export { useBulkRemoveFromToday } from './hooks/useBulkRemoveFromToday';
 export { useReorderTasks } from './hooks/useReorderTasks';
+export { useStartTask } from './hooks/useStartTask';
 export { useTags } from './hooks/useTags';
 export type { Task, TaskStatus, TaskPriority } from './types/task.types';

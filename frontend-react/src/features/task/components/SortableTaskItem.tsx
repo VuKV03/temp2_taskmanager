@@ -19,7 +19,7 @@ export const SortableTaskItem = ({ task, onOpenDetail }: SortableTaskItemProps) 
   };
 
   return (
-    <div ref={setNodeRef} style={style} className="group relative flex items-center bg-white">
+    <div ref={setNodeRef} style={style} className="group relative flex items-center bg-surface">
       <button
         {...attributes}
         {...listeners}

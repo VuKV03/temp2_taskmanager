@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { LogOut, User as UserIcon, ChevronDown } from 'lucide-react';
 import { useAuthStore, useLogout } from '../../../features/auth';
 import { NotificationBell } from '../../../features/notification';
+import { ThemeToggle } from '../ui';
 import { cn } from '../../utils/cn';
 
 export const Header = () => {
@@ -9,7 +10,7 @@ export const Header = () => {
   const { mutate: logout, isPending } = useLogout();
   const [open, setOpen] = useState(false);
 
-  if (!user) return <header className="h-14 border-b border-border bg-white" />;
+  if (!user) return <header className="h-14 border-b border-border bg-surface" />;
 
   const initials = user.fullName
     .split(' ')
@@ -19,7 +20,8 @@ export const Header = () => {
     .toUpperCase();
 
   return (
-    <header className="flex h-14 items-center justify-end gap-2 border-b border-border bg-white px-6">
+    <header className="flex h-14 items-center justify-end gap-3 border-b border-border bg-surface px-6">
+      <ThemeToggle />
       <NotificationBell />
       <div className="relative">
         <button

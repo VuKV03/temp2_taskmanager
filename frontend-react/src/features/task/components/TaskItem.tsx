@@ -28,7 +28,7 @@ export const TaskItem = ({ task, onOpenDetail, isOverdue }: TaskItemProps) => {
   return (
     <div
       className={cn(
-        'flex items-center gap-3 border-b border-border bg-white px-3 py-3 last:border-b-0',
+        'flex items-center gap-3 border-b border-border bg-surface px-3 py-3 last:border-b-0',
         isOverdue && 'border-l-[3px] border-l-red-500',
       )}
     >

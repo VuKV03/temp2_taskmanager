@@ -8,3 +8,5 @@ export { Badge } from './Badge';
 export { Modal } from './Modal';
 export { Drawer } from './Drawer';
 export { ConfirmDialog } from './ConfirmDialog';
+export { FilterDropdown } from './FilterDropdown';
+export { ThemeToggle } from './ThemeToggle';

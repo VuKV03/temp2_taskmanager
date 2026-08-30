@@ -1,18 +1,20 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router';
 import { Search, X } from 'lucide-react';
-import { Input, Select } from '../../../shared/components/ui';
+import { Input, FilterDropdown } from '../../../shared/components/ui';
 import { useDebounce } from '../../../shared/hooks/useDebounce';
 import { useTags } from '../hooks/useTags';
 import { TASK_STATUS_LABEL, TASK_PRIORITY_LABEL } from '../types/task.types';
 import type { TaskStatus, TaskPriority } from '../types/task.types';
 
-const STATUS_OPTIONS = Object.keys(TASK_STATUS_LABEL) as TaskStatus[];
-const PRIORITY_OPTIONS = Object.keys(TASK_PRIORITY_LABEL) as TaskPriority[];
-
-function toggleInList(current: string[], value: string): string[] {
-  return current.includes(value) ? current.filter((v) => v !== value) : [...current, value];
-}
+const STATUS_OPTIONS = (Object.keys(TASK_STATUS_LABEL) as TaskStatus[]).map((value) => ({
+  value,
+  label: TASK_STATUS_LABEL[value],
+}));
+const PRIORITY_OPTIONS = (Object.keys(TASK_PRIORITY_LABEL) as TaskPriority[]).map((value) => ({
+  value,
+  label: TASK_PRIORITY_LABEL[value],
+}));
 
 export const TaskFilters = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -49,6 +51,8 @@ export const TaskFilters = () => {
     });
   };
 
+  const tagOptions = (tags ?? []).map((tag) => ({ value: String(tag.id), label: tag.name }));
+
   const hasFilters = status.length > 0 || priority.length > 0 || tagIds.length > 0 || !!q;
 
   const clearAll = () => {
@@ -73,53 +77,27 @@ export const TaskFilters = () => {
         />
       </div>
 
-      <div className="flex flex-wrap gap-1">
-        {STATUS_OPTIONS.map((s) => (
-          <button
-            key={s}
-            type="button"
-            onClick={() => updateListParam('status', toggleInList(status, s))}
-            className={`rounded-full border px-3 py-1 text-small ${
-              status.includes(s) ? 'border-primary bg-primary/10 text-primary' : 'border-border text-text-muted'
-            }`}
-          >
-            {TASK_STATUS_LABEL[s]}
-          </button>
-        ))}
-      </div>
+      <FilterDropdown
+        label="Trạng thái"
+        options={STATUS_OPTIONS}
+        selected={status}
+        onChange={(values) => updateListParam('status', values)}
+      />
 
-      <div className="flex flex-wrap gap-1">
-        {PRIORITY_OPTIONS.map((p) => (
-          <button
-            key={p}
-            type="button"
-            onClick={() => updateListParam('priority', toggleInList(priority, p))}
-            className={`rounded-full border px-3 py-1 text-small ${
-              priority.includes(p) ? 'border-primary bg-primary/10 text-primary' : 'border-border text-text-muted'
-            }`}
-          >
-            {TASK_PRIORITY_LABEL[p]}
-          </button>
-        ))}
-      </div>
+      <FilterDropdown
+        label="Độ ưu tiên"
+        options={PRIORITY_OPTIONS}
+        selected={priority}
+        onChange={(values) => updateListParam('priority', values)}
+      />
 
-      {tags && tags.length > 0 && (
-        <Select
-          className="w-36"
-          value=""
-          onChange={(e) => {
-            if (e.target.value) updateListParam('tagIds', toggleInList(tagIds, e.target.value));
-          }}
-          aria-label="Lọc theo nhãn"
-        >
-          <option value="">Nhãn ▾</option>
-          {tags.map((tag) => (
-            <option key={tag.id} value={tag.id}>
-              {tagIds.includes(String(tag.id)) ? '✓ ' : ''}
-              {tag.name}
-            </option>
-          ))}
-        </Select>
+      {tagOptions.length > 0 && (
+        <FilterDropdown
+          label="Nhãn"
+          options={tagOptions}
+          selected={tagIds}
+          onChange={(values) => updateListParam('tagIds', values)}
+        />
       )}
 
       {hasFilters && (

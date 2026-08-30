@@ -42,7 +42,7 @@ export const StatisticPage = () => {
           <SummaryCards totals={summary.totals} />
 
           {summary.streakDays > 0 && (
-            <div className="flex items-center gap-2 rounded-lg border border-border bg-white px-4 py-3 text-body text-text">
+            <div className="flex items-center gap-2 rounded-lg border border-border bg-surface px-4 py-3 text-body text-text">
               <Flame className="h-5 w-5 text-priority-urgent" />
               Chuỗi hoàn thành: <span className="font-semibold">{summary.streakDays} ngày</span>
               {summary.avgCompletionHours > 0 && (
@@ -54,15 +54,15 @@ export const StatisticPage = () => {
           )}
 
           <div className="grid gap-4 md:grid-cols-2">
-            <div className="rounded-lg border border-border bg-white p-4">
+            <div className="rounded-lg border border-border bg-surface p-4">
               <h3 className="mb-2 text-body font-semibold text-text">Xu hướng hoàn thành</h3>
               <CompletionChart data={completion ?? []} />
             </div>
-            <div className="rounded-lg border border-border bg-white p-4">
+            <div className="rounded-lg border border-border bg-surface p-4">
               <h3 className="mb-2 text-body font-semibold text-text">Theo trạng thái</h3>
               <StatusPieChart data={summary.byStatus} />
             </div>
-            <div className="rounded-lg border border-border bg-white p-4 md:col-span-2">
+            <div className="rounded-lg border border-border bg-surface p-4 md:col-span-2">
               <h3 className="mb-2 text-body font-semibold text-text">Theo độ ưu tiên</h3>
               <PriorityBarChart data={summary.byPriority} />
             </div>

@@ -42,11 +42,11 @@ export const AdminStatisticPage = () => {
           <p className="text-small text-text-muted">Tổng số người dùng: {overview.totals.totalUsers}</p>
 
           <div className="grid gap-4 md:grid-cols-2">
-            <div className="rounded-lg border border-border bg-white p-4">
+            <div className="rounded-lg border border-border bg-surface p-4">
               <h3 className="mb-2 text-body font-semibold text-text">Theo trạng thái</h3>
               <StatusPieChart data={overview.byStatus} />
             </div>
-            <div className="rounded-lg border border-border bg-white p-4">
+            <div className="rounded-lg border border-border bg-surface p-4">
               <h3 className="mb-2 text-body font-semibold text-text">Theo độ ưu tiên</h3>
               <PriorityBarChart data={overview.byPriority} />
             </div>

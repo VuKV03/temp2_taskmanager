@@ -74,7 +74,10 @@ export const TaskFormModal = ({ open, onClose, task, defaultListId }: TaskFormMo
       priority: values.priority,
       dueDate: values.dueDate ? DateTime.fromISO(values.dueDate).toUTC().toISO()! : undefined,
       estimateMinutes: values.estimateMinutes ? Number(values.estimateMinutes) : undefined,
-      tagIds: tags.map((t) => t.id),
+      // `t.id` comes back from the API as a numeric string (bigint), even though
+      // `TagSummary.id` is typed `number` — normalize before sending, or the
+      // backend's `@IsInt({ each: true })` on tagIds rejects the request.
+      tagIds: tags.map((t) => Number(t.id)),
     };
 
     if (isEdit) {

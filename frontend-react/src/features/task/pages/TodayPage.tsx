@@ -10,7 +10,7 @@ import { TaskFormModal } from '../components/TaskFormModal';
 import { ROUTES } from '../../../routes/routes';
 
 const StatCard = ({ value, label }: { value: number; label: string }) => (
-  <div className="flex-1 rounded-md border border-border bg-white p-4 text-center">
+  <div className="flex-1 rounded-md border border-border bg-surface p-4 text-center">
     <p className="text-stat font-bold text-text">{value}</p>
     <p className="text-small text-text-muted">{label}</p>
   </div>

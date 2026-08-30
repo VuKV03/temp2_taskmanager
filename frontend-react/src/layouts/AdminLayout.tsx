@@ -18,7 +18,7 @@ const navLinkClass = ({ isActive }: { isActive: boolean }) =>
 export const AdminLayout = () => {
   return (
     <div className="flex h-screen bg-background">
-      <aside className="hidden w-60 shrink-0 border-r border-border bg-white md:flex md:flex-col">
+      <aside className="hidden w-60 shrink-0 border-r border-border bg-surface md:flex md:flex-col">
         <div className="p-4">
           <h1 className="text-lg font-heading font-semibold text-text">⚙️ Admin</h1>
         </div>

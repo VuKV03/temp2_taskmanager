@@ -185,7 +185,11 @@ export const TaskDetailDrawer = ({ taskId, onClose }: TaskDetailDrawerProps) => 
             </label>
             <TagPicker
               value={task.tags}
-              onChange={(tags: TagSummary[]) => replaceTags({ id: task.id, tagIds: tags.map((t) => t.id) })}
+              onChange={(tags: TagSummary[]) =>
+                // `t.id` is a numeric string at runtime (bigint) despite the `number`
+                // type — normalize or the backend's @IsInt validation rejects it.
+                replaceTags({ id: task.id, tagIds: tags.map((t) => Number(t.id)) })
+              }
             />
           </div>
 

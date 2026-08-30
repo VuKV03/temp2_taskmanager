@@ -46,7 +46,7 @@ export const AdminUserDetailPage = () => {
 
       {user && (
         <>
-          <div className="rounded-lg border border-border bg-white p-5">
+          <div className="rounded-lg border border-border bg-surface p-5">
             <div className="flex items-start justify-between">
               <div>
                 <h1>{user.fullName}</h1>
@@ -99,7 +99,7 @@ export const AdminUserDetailPage = () => {
             )}
           </div>
 
-          <div className="rounded-lg border border-border bg-white p-5">
+          <div className="rounded-lg border border-border bg-surface p-5">
             <h3 className="mb-3 text-body font-semibold text-text">Thống kê công việc</h3>
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
               <div>

@@ -19,13 +19,13 @@
 
 | Token | Hex | Dùng cho |
 |-------|-----|----------|
-| `primary` | `#4F46E5` | Nút chính, link, trạng thái active |
-| `primary-hover` | `#4338CA` | Hover nút chính |
+| `primary` | `#2563EB` | Nút chính, link, trạng thái active |
+| `primary-hover` | `#1D4ED8` | Hover nút chính |
 | `surface` | `#FFFFFF` | Nền thẻ, modal |
-| `background` | `#F9FAFB` | Nền trang |
-| `border` | `#E5E7EB` | Viền, đường kẻ |
-| `text` | `#111827` | Chữ chính |
-| `text-muted` | `#6B7280` | Chữ phụ, mô tả |
+| `background` | `#F1F5F9` | Nền trang |
+| `border` | `#E2E8F0` | Viền, đường kẻ |
+| `text` | `#0F172A` | Chữ chính |
+| `text-muted` | `#64748B` | Chữ phụ, mô tả |
 
 ### Màu theo trạng thái task
 

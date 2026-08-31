@@ -33,6 +33,7 @@ User notifications for task events: due soon, overdue, assignment, comments.
 3. `unread-count` returns `{ count: number }` for the badge
 4. Deduplication: `existsForTask(userId, taskId, type)` — never a second `due_soon`/`overdue` for the same task
 5. Non-critical: every write path (event listener, cron) catches and logs its own errors rather than throwing — a lost notification must never fail the task/comment action that triggered it, or crash the cron batch over one bad row
+6. **Outbound Telegram** (realtime push, alongside the always-created DB row): if a user has linked `users.telegram_chat_id` (`auth`'s `PATCH /auth/me`) and `TELEGRAM_BOT_TOKEN` is configured, every trigger below also fires `TelegramService.sendMessage`. Same best-effort tolerance as rule 5 — swallowed/logged, never thrown. The DB `message` text is never changed for this; Telegram gets its own emoji-prefixed copy built at the call site
 
 ## Triggers
 
@@ -44,6 +45,7 @@ User notifications for task events: due soon, overdue, assignment, comments.
 
 ## Dependencies
 
-- auth (user scope)
+- auth (user scope; also `UserRepository` to resolve a `telegramChatId` off an event payload's bare `userId`)
 - task (`TaskRepository` from `TaskModule`, cron only — no reverse dependency)
+- core/telegram (`TelegramService`, outbound push — see rule 6)
 - (event contract with) collaboration — via `EventEmitter2`, not a module import

@@ -6,7 +6,7 @@ Task list (project/board) management and sidebar navigation. `TaskListSidebar` i
 
 ## Components
 
-- `TaskListSidebar` — Quick links (Hôm nay, Tất cả công việc) + user's lists, drag-to-reorder (dnd-kit)
+- `TaskListSidebar` — Quick links (Công việc, Danh sách công việc, Lịch sử, Thống kê, Bốc thăm công việc) + user's lists, drag-to-reorder (dnd-kit)
 - `TaskListSidebarItem` — One sortable row: color dot, name (NavLink), edit/delete on hover
 - `ListForm` — Modal for create/edit (name, description, color swatch)
 
@@ -25,7 +25,7 @@ Task list (project/board) management and sidebar navigation. `TaskListSidebar` i
 
 ## Not implemented in this pass
 
-- Quick links only include "Hôm nay" and "Tất cả công việc" — "Thống kê", "Lịch sử", "Người dùng" are omitted since `statistic`/`activity`/`user-management` aren't built yet on the frontend (adding the links would be dead navigation)
+- No `user-management` quick link here (admin-only pages live under `/admin/*` via `AdminLayout`'s own nav instead)
 
 ## Dependencies
 

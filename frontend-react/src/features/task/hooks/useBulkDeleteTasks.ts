@@ -13,6 +13,8 @@ export const useBulkDeleteTasks = () => {
     onSuccess: (res) => {
       queryClient.invalidateQueries({ queryKey: ['tasks'] });
       queryClient.invalidateQueries({ queryKey: ['stats'] });
+      // Archiving drops out of its card's `taskCount` (counted rows are `is_archived = 0`).
+      queryClient.invalidateQueries({ queryKey: ['task-cards'] });
       toast.success(`Đã xoá ${res.data?.archivedCount ?? 0} công việc`);
     },
     onError: (error) => toast.error(getErrorMessage(error.code)),

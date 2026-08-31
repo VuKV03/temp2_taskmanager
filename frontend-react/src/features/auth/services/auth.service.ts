@@ -25,6 +25,8 @@ export const authService = {
 
   updateProfile: (payload: UpdateProfilePayload) => api.patch<ApiResponse<User>>('/auth/me', payload),
 
+  sendTelegramTest: () => api.post<ApiResponse<{ message: string }>>('/auth/me/telegram/test'),
+
   changePassword: (payload: ChangePasswordPayload) =>
     api.patch<ApiResponse<{ message: string }>>('/auth/change-password', payload),
 

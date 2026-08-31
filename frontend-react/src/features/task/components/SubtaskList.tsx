@@ -20,7 +20,9 @@ export const SubtaskList = ({ parentTaskId, subtasks }: SubtaskListProps) => {
 
   const addSubtask = () => {
     if (!title.trim()) return;
-    createTask({ title: title.trim(), parentTaskId }, { onSuccess: () => setTitle('') });
+    // Quick-add — no points field in this tiny form; defaults to 0 and can
+    // be set for real later by editing the subtask like any other task.
+    createTask({ title: title.trim(), parentTaskId, points: 0 }, { onSuccess: () => setTitle('') });
   };
 
   return (

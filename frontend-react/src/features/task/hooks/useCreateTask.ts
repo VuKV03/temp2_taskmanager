@@ -14,6 +14,8 @@ export const useCreateTask = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['tasks'] });
       queryClient.invalidateQueries({ queryKey: ['stats'] });
+      // A new task can land on a card (`cardId`) — its `taskCount` needs to move.
+      queryClient.invalidateQueries({ queryKey: ['task-cards'] });
       toast.success('Đã tạo công việc');
     },
     onError: (error) => toast.error(getErrorMessage(error.code)),

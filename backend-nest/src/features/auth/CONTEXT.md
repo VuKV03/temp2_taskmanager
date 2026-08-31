@@ -21,7 +21,8 @@ Base module — every other feature depends on it for `User`, `JwtAuthGuard`,
 
 ### Protected
 - `GET /auth/me` — Get current user info
-- `PATCH /auth/me` — Update profile (name, avatar, timezone)
+- `PATCH /auth/me` — Update profile (name, avatar, timezone, `telegramChatId` — blank string unlinks)
+- `POST /auth/me/telegram/test` — Send a test message to the linked Telegram chat (`USER_006` if not linked, `USER_007` if the send itself fails)
 - `PATCH /auth/change-password` — Change password (revokes all sessions)
 - `POST /auth/logout` — Logout, revoke current refresh token
 - `POST /auth/logout-all` — Revoke all refresh tokens
@@ -47,7 +48,7 @@ Base module — every other feature depends on it for `User`, `JwtAuthGuard`,
 
 ## Dependencies
 
-- None (base module). Exports `AuthService`, `UserRepository`, and `TypeOrmModule` (for the `User`/`Role` entities) so other features read user data without reaching into `auth`'s internals.
+- None (base module) except `core/telegram` (`TelegramService`, for the test-send endpoint). Exports `AuthService`, `UserRepository`, and `TypeOrmModule` (for the `User`/`Role` entities) so other features read user data without reaching into `auth`'s internals.
 
 ## Not implemented here
 

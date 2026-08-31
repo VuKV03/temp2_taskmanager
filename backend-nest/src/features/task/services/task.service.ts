@@ -8,6 +8,7 @@ import type { JwtPayload } from '../../../shared/decorators/current-user.decorat
 import { ActivityLoggerService } from '../../activity/services/activity-logger.service.js';
 import type { TaskAssignedEvent } from '../../notification/types/notification-events.types.js';
 import { TaskListRepository } from '../../task-list/repositories/task-list.repository.js';
+import { TaskCardRepository } from '../../task-card/repositories/task-card.repository.js';
 import { UserRepository } from '../../auth/repositories/user.repository.js';
 import { TaskRepository } from '../repositories/task.repository.js';
 import { TagRepository } from '../repositories/tag.repository.js';
@@ -27,6 +28,7 @@ export class TaskService {
     private readonly taskRepository: TaskRepository,
     private readonly tagRepository: TagRepository,
     private readonly taskListRepository: TaskListRepository,
+    private readonly taskCardRepository: TaskCardRepository,
     private readonly userRepository: UserRepository,
     private readonly activityLogger: ActivityLoggerService,
     private readonly eventEmitter: EventEmitter2,
@@ -68,6 +70,7 @@ export class TaskService {
     }
 
     const assigneeId = await this.resolveAssignee(user, dto.assigneeId);
+    const cardId = await this.resolveCardId(user, dto.cardId);
 
     if (dto.recurrenceRule && !dto.dueDate) {
       throw new AppException(ERROR_CODES.SYS_002, HttpStatus.BAD_REQUEST, {
@@ -82,6 +85,7 @@ export class TaskService {
         title: dto.title,
         description: dto.description ?? null,
         listId,
+        cardId,
         parentTaskId: dto.parentTaskId ?? null,
         creatorId: user.id,
         assigneeId,
@@ -89,6 +93,7 @@ export class TaskService {
         startDate: dto.startDate ? new Date(dto.startDate) : null,
         dueDate: dto.dueDate ? new Date(dto.dueDate) : null,
         estimateMinutes: dto.estimateMinutes ?? null,
+        points: dto.points,
         recurrenceRule: dto.recurrenceRule ?? null,
         tags,
       });
@@ -120,12 +125,27 @@ export class TaskService {
       }
       task.listId = dto.listId;
     }
+    if (dto.cardId !== undefined) {
+      // `dto.cardId` can legitimately be `null` here (unlink) even though
+      // `UpdateTaskDto`'s declared type says `number | undefined` — same
+      // "class-validator's @IsOptional() also passes through null" shape as
+      // `listId` above; class-validator doesn't reject it, so it reaches here.
+      const nextCardId = dto.cardId as number | null;
+      if (nextCardId !== null) {
+        const card = await this.taskCardRepository.findById(nextCardId);
+        if (!card || card.ownerId !== user.id) {
+          throw new AppException(ERROR_CODES.CARD_002);
+        }
+      }
+      task.cardId = nextCardId;
+    }
     if (dto.title !== undefined) task.title = dto.title;
     if (dto.description !== undefined) task.description = dto.description;
     if (dto.priority !== undefined) task.priority = dto.priority;
     if (dto.startDate !== undefined) task.startDate = dto.startDate ? new Date(dto.startDate) : null;
     if (dto.dueDate !== undefined) task.dueDate = dto.dueDate ? new Date(dto.dueDate) : null;
     if (dto.estimateMinutes !== undefined) task.estimateMinutes = dto.estimateMinutes;
+    if (dto.points !== undefined) task.points = dto.points;
     if (dto.recurrenceRule !== undefined) task.recurrenceRule = dto.recurrenceRule;
     if (dto.tagIds !== undefined) task.tags = await this.resolveTags(user.id, dto.tagIds);
 
@@ -307,6 +327,19 @@ export class TaskService {
       throw new AppException(ERROR_CODES.TASK_006);
     }
     return requestedAssigneeId;
+  }
+
+  private async resolveCardId(user: JwtPayload, cardId: number | null | undefined): Promise<number | null> {
+    // The frontend sends an explicit `null` for "no card" (same convention
+    // as `listId`), not just `undefined` — a strict `=== undefined` check
+    // let `null` fall through to `findById(null)`, which TypeORM rejects
+    // outright ("use IsNull()") instead of just finding nothing.
+    if (cardId === undefined || cardId === null) return null;
+    const card = await this.taskCardRepository.findById(cardId);
+    if (!card || card.ownerId !== user.id) {
+      throw new AppException(ERROR_CODES.CARD_002);
+    }
+    return cardId;
   }
 
   private async resolveTags(userId: number, tagIds: number[]) {

@@ -80,6 +80,7 @@ export class TaskRecurrenceService {
         dueDate: nextDueDate,
         completedAt: null,
         estimateMinutes: template.estimateMinutes,
+        points: template.points,
         recurrenceRule: template.recurrenceRule, // torch passes to the new row
         sortOrder: template.sortOrder,
         tags: template.tags,

@@ -18,6 +18,8 @@ export const ERROR_MESSAGES: Record<string, string> = {
   USER_003: 'Bạn không thể vô hiệu hoá tài khoản của chính mình',
   USER_004: 'Mật khẩu cũ không chính xác',
   USER_005: 'Không thể xoá admin cuối cùng',
+  USER_006: 'Bạn chưa liên kết Telegram',
+  USER_007: 'Gửi tin nhắn Telegram thất bại, kiểm tra lại Chat ID',
 
   // List
   LIST_001: 'Danh sách không tồn tại',
@@ -32,6 +34,10 @@ export const ERROR_MESSAGES: Record<string, string> = {
   TASK_005: 'Còn công việc con chưa hoàn thành',
   TASK_006: 'Người được gán không tồn tại hoặc đã bị vô hiệu hoá',
   TASK_007: 'Tham chiếu công việc cha không hợp lệ (vòng lặp)',
+
+  // Task card
+  CARD_001: 'Thẻ công việc không tồn tại',
+  CARD_002: 'Bạn không phải chủ thẻ công việc này',
 
   // Tag
   TAG_001: 'Nhãn không tồn tại',
@@ -48,6 +54,13 @@ export const ERROR_MESSAGES: Record<string, string> = {
 
   // Notification
   NOTIF_001: 'Thông báo không tồn tại',
+
+  // Random draw
+  DRAW_001: 'Phiên bốc thăm không tồn tại',
+  DRAW_002: 'Bạn không phải chủ phiên bốc thăm này',
+  DRAW_003: 'Ngân hàng công việc đã hết, không còn gì để bốc',
+  DRAW_004: 'Không có công việc nào để bốc',
+  DRAW_005: 'Công việc này không còn trong ngân hàng chờ bốc',
 
   // System
   SYS_001: 'Có lỗi xảy ra, vui lòng thử lại',

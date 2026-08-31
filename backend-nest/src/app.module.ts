@@ -10,18 +10,21 @@ import { LoggerModule } from './core/logger/logger.module.js';
 import { CacheModule } from './core/cache/cache.module.js';
 import { QueueModule } from './core/queue/queue.module.js';
 import { StorageModule } from './core/storage/storage.module.js';
+import { TelegramModule } from './core/telegram/telegram.module.js';
 import { JwtAuthGuard } from './shared/guards/jwt-auth.guard.js';
 import { RolesGuard } from './shared/guards/roles.guard.js';
 import { AppController } from './app.controller.js';
 import { AppService } from './app.service.js';
 import { AuthModule } from './features/auth/auth.module.js';
 import { TaskListModule } from './features/task-list/task-list.module.js';
+import { TaskCardModule } from './features/task-card/task-card.module.js';
 import { TaskModule } from './features/task/task.module.js';
 import { ActivityModule } from './features/activity/activity.module.js';
 import { CollaborationModule } from './features/collaboration/collaboration.module.js';
 import { NotificationModule } from './features/notification/notification.module.js';
 import { StatisticModule } from './features/statistic/statistic.module.js';
 import { UserManagementModule } from './features/user-management/user-management.module.js';
+import { RandomDrawModule } from './features/random-draw/random-draw.module.js';
 
 @Module({
   imports: [
@@ -38,6 +41,7 @@ import { UserManagementModule } from './features/user-management/user-management
     CacheModule,
     QueueModule,
     StorageModule,
+    TelegramModule,
 
     // Event-driven architecture
     EventEmitterModule.forRoot(),
@@ -52,12 +56,14 @@ import { UserManagementModule } from './features/user-management/user-management
     // Feature modules
     AuthModule,
     TaskListModule,
+    TaskCardModule,
     TaskModule,
     ActivityModule,
     CollaborationModule,
     NotificationModule,
     StatisticModule,
     UserManagementModule,
+    RandomDrawModule,
   ],
   controllers: [AppController],
   providers: [

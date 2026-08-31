@@ -43,6 +43,11 @@ export class User {
   @Column({ type: 'varchar', length: 50, default: 'Asia/Ho_Chi_Minh' })
   timezone: string;
 
+  // Telegram's numeric chat id (kept as string — can be large/negative for
+  // group chats) for the "message me directly" bot flow. Null = not linked.
+  @Column({ name: 'telegram_chat_id', type: 'varchar', length: 64, nullable: true })
+  telegramChatId: string | null;
+
   @Column({ name: 'is_active', type: 'boolean', default: true })
   isActive: boolean;
 

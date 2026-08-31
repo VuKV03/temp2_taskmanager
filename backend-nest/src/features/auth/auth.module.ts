@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { TelegramModule } from '../../core/telegram/telegram.module.js';
 import { parseDurationMs } from '../../shared/utils/token.util.js';
 import { Role } from './entities/role.entity.js';
 import { User } from './entities/user.entity.js';
@@ -29,6 +30,7 @@ import { JwtStrategy } from './strategies/jwt.strategy.js';
         },
       }),
     }),
+    TelegramModule,
   ],
   controllers: [AuthController],
   providers: [AuthService, UserRepository, RefreshTokenRepository, JwtStrategy],

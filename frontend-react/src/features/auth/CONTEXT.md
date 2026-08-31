@@ -8,6 +8,7 @@ Authentication and authorization for the task manager application.
 
 - `LoginPage` — Login form with email/password
 - `RegisterPage` — Register form with name, email, password, timezone selection
+- `ProfilePage` (`/profile`, linked from `Header`'s "Hồ sơ") — Telegram chat-id linking only (save + "Gửi thử" test-send); name/avatar/timezone editing still not wired to a page (see "Not implemented" below)
 
 ## Components
 
@@ -21,6 +22,8 @@ Authentication and authorization for the task manager application.
 - `useCurrentUser()` — Query for `/auth/me`, enabled only while authenticated
 - `useLogout()` — Mutation; clears store + query cache regardless of server result, navigates to `/login`
 - `useChangePassword()` — Mutation for password change
+- `useUpdateProfile()` — Mutation for `PATCH /auth/me`; updates the Zustand store's `user` and the `['auth','me']` query cache directly on success (no refetch needed)
+- `useSendTelegramTest()` — Mutation for `POST /auth/me/telegram/test`; `USER_006` if not linked yet, `USER_007` if the send itself fails
 - `useAuthBootstrap()` — Called once from `App.tsx`. On mount, silently calls `POST /auth/refresh` (httpOnly cookie) to get a new access token, since the token itself is memory-only and lost on reload. `ProtectedRoute` shows a full-page spinner while this is in flight (`isInitializing`) instead of bouncing to `/login`.
 
 ## Store (Zustand) — `stores/auth.store.ts`
@@ -49,4 +52,4 @@ The store never talks to axios directly for the token — it calls `setAccessTok
 ## Not implemented in this pass
 
 - `/auth/sessions` UI (list/revoke active sessions) — service methods exist (`authService.sessions`, `.revokeSession`) but no page wires them yet
-- Profile edit page (`PATCH /auth/me`) — `useChangePassword` exists; full profile page deferred
+- Full profile edit (name/avatar/timezone) — `useUpdateProfile`/`UpdateProfilePayload` support all three, `ProfilePage` just doesn't render inputs for them yet (only `telegramChatId`)

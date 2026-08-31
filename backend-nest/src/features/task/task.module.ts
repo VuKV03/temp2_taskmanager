@@ -17,6 +17,7 @@ import { TagController } from './controllers/tag.controller.js';
 import { AdminTaskController } from './controllers/admin-task.controller.js';
 import { AuthModule } from '../auth/auth.module.js';
 import { TaskListModule } from '../task-list/task-list.module.js';
+import { TaskCardModule } from '../task-card/task-card.module.js';
 import { ActivityModule } from '../activity/activity.module.js';
 
 @Module({
@@ -24,6 +25,7 @@ import { ActivityModule } from '../activity/activity.module.js';
     TypeOrmModule.forFeature([Task, Tag]),
     AuthModule,
     TaskListModule,
+    TaskCardModule,
     ActivityModule,
     BullModule.registerQueue({ name: RECURRING_TASKS_QUEUE }),
   ],

@@ -112,6 +112,15 @@ export class AuthController {
   }
 
   @ApiBearerAuth('access-token')
+  @Post('me/telegram/test')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Send a test Telegram message to the linked chat id' })
+  async sendTelegramTest(@CurrentUser() user: JwtPayload) {
+    await this.authService.sendTelegramTest(user.id);
+    return { message: 'Đã gửi tin nhắn thử nghiệm' };
+  }
+
+  @ApiBearerAuth('access-token')
   @Patch('change-password')
   @ApiOperation({ summary: 'Change password' })
   async changePassword(@CurrentUser() user: JwtPayload, @Body() dto: ChangePasswordDto) {

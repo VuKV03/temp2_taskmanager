@@ -3,6 +3,7 @@ import {
   IsNotEmpty,
   IsOptional,
   IsInt,
+  IsNumber,
   IsEnum,
   IsISO8601,
   Min,
@@ -33,6 +34,10 @@ export class CreateTaskDto {
 
   @IsOptional()
   @IsInt()
+  cardId?: number;
+
+  @IsOptional()
+  @IsInt()
   parentTaskId?: number;
 
   @IsOptional()
@@ -55,6 +60,13 @@ export class CreateTaskDto {
   @IsInt()
   @Min(1)
   estimateMinutes?: number;
+
+  // Workload — required going forward (existing tasks predate this field
+  // and stay NULL in the DB; see task.entity.ts). 1 point = 1 day, per the
+  // user's own convention, not enforced server-side.
+  @IsNumber({ maxDecimalPlaces: 2 })
+  @Min(0)
+  points: number;
 
   @IsOptional()
   @Matches(RRULE_PATTERN, { message: 'recurrenceRule must be a valid RRULE, e.g. FREQ=DAILY' })

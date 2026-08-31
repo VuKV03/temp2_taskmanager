@@ -15,6 +15,8 @@ export const useUpdateTask = () => {
       queryClient.invalidateQueries({ queryKey: ['tasks'] });
       queryClient.invalidateQueries({ queryKey: ['tasks', variables.id] });
       queryClient.invalidateQueries({ queryKey: ['stats'] });
+      // `cardId` may have moved (or been cleared) — a card's `taskCount` needs to move with it.
+      queryClient.invalidateQueries({ queryKey: ['task-cards'] });
     },
     onError: (error) => toast.error(getErrorMessage(error.code)),
   });

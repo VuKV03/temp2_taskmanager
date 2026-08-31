@@ -6,11 +6,12 @@ import { AdminRoute } from './AdminRoute';
 import { AuthLayout } from '../layouts/AuthLayout';
 import { MainLayout } from '../layouts/MainLayout';
 import { AdminLayout } from '../layouts/AdminLayout';
-import { LoginPage, RegisterPage } from '../features/auth';
-import { TodayPage, TaskListPage, TaskDetailPage } from '../features/task';
+import { LoginPage, RegisterPage, ProfilePage } from '../features/auth';
+import { TaskCardPage, TaskListPage, TaskDetailPage } from '../features/task';
 import { HistoryPage, AdminHistoryPage } from '../features/activity';
 import { StatisticPage, AdminStatisticPage } from '../features/statistic';
 import { AdminUserListPage, AdminUserDetailPage } from '../features/user-management';
+import { RandomDrawPage } from '../features/random-draw';
 import { ROUTES } from './routes';
 
 /**
@@ -27,12 +28,14 @@ const publicRoutes: RouteObject[] = [
 ];
 
 const protectedRoutes: RouteObject[] = [
-  { index: true, element: <TodayPage /> },
+  { index: true, element: <TaskCardPage /> },
   { path: 'tasks', element: <TaskListPage /> },
   { path: 'tasks/:id', element: <TaskDetailPage /> },
   { path: 'lists/:id', element: <TaskListPage /> },
   { path: 'history', element: <HistoryPage /> },
   { path: 'statistic', element: <StatisticPage /> },
+  { path: 'random-draw', element: <RandomDrawPage /> },
+  { path: 'profile', element: <ProfilePage /> },
 ];
 
 const adminRoutes: RouteObject[] = [

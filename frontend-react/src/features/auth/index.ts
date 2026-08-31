@@ -1,10 +1,13 @@
 export { LoginPage } from './pages/LoginPage';
 export { RegisterPage } from './pages/RegisterPage';
+export { ProfilePage } from './pages/ProfilePage';
 export { useAuthStore } from './stores/auth.store';
 export { useLogin } from './hooks/useLogin';
 export { useRegister } from './hooks/useRegister';
 export { useCurrentUser } from './hooks/useCurrentUser';
 export { useLogout } from './hooks/useLogout';
 export { useChangePassword } from './hooks/useChangePassword';
+export { useUpdateProfile } from './hooks/useUpdateProfile';
+export { useSendTelegramTest } from './hooks/useSendTelegramTest';
 export { useAuthBootstrap } from './hooks/useAuthBootstrap';
 export type { User, UserRole } from './types/auth.types';

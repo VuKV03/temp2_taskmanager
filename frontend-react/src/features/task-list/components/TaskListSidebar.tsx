@@ -3,7 +3,7 @@ import { NavLink } from 'react-router';
 import { DndContext, PointerSensor, KeyboardSensor, closestCenter, useSensor, useSensors } from '@dnd-kit/core';
 import type { DragEndEvent } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy, sortableKeyboardCoordinates } from '@dnd-kit/sortable';
-import { CalendarCheck, ListTodo, History, BarChart3, Plus } from 'lucide-react';
+import { LayoutGrid, ListTodo, History, BarChart3, Dice5, Plus } from 'lucide-react';
 import { Skeleton, ErrorState } from '../../../shared/components/feedback';
 import { ConfirmDialog } from '../../../shared/components/ui';
 import { cn } from '../../../shared/utils/cn';
@@ -62,8 +62,8 @@ export const TaskListSidebar = () => {
   return (
     <nav className="flex h-full flex-col gap-1 p-3" aria-label="Điều hướng chính">
       <NavLink to={ROUTES.TODAY} end className={quickLinkClass}>
-        <CalendarCheck className="h-4 w-4" />
-        Hôm nay
+        <LayoutGrid className="h-4 w-4" />
+        Công việc
       </NavLink>
       <NavLink to={ROUTES.TASKS} className={quickLinkClass}>
         <ListTodo className="h-4 w-4" />
@@ -76,6 +76,10 @@ export const TaskListSidebar = () => {
       <NavLink to={ROUTES.STATISTIC} className={quickLinkClass}>
         <BarChart3 className="h-4 w-4" />
         Thống kê
+      </NavLink>
+      <NavLink to={ROUTES.RANDOM_DRAW} className={quickLinkClass}>
+        <Dice5 className="h-4 w-4" />
+        Bốc thăm công việc
       </NavLink>
 
       <div className="mt-4 flex items-center justify-between px-2">

@@ -15,6 +15,7 @@ export interface UserResponse {
   avatarUrl: string | null;
   role: UserRole;
   timezone: string;
+  telegramChatId: string | null;
   isActive: boolean;
   lastLoginAt: string | null;
   createdAt: string;
@@ -43,6 +44,7 @@ export function toUserResponse(user: User): UserResponse {
     avatarUrl: user.avatarUrl,
     role: user.role.name,
     timezone: user.timezone,
+    telegramChatId: user.telegramChatId,
     isActive: user.isActive,
     lastLoginAt: user.lastLoginAt ? user.lastLoginAt.toISOString() : null,
     createdAt: user.createdAt.toISOString(),

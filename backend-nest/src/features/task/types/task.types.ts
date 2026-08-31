@@ -12,7 +12,7 @@ export enum TaskPriority {
   URGENT = 'urgent',
 }
 
-export const TASK_SORT_FIELDS = ['dueDate', 'priority', 'createdAt', 'updatedAt', 'sortOrder'] as const;
+export const TASK_SORT_FIELDS = ['dueDate', 'priority', 'createdAt', 'updatedAt', 'sortOrder', 'points'] as const;
 export type TaskSortField = (typeof TASK_SORT_FIELDS)[number];
 
 // Task Status Flow — see API_SPEC.md "Task Status Flow". `cancelled` is a
@@ -59,6 +59,7 @@ export interface TaskResponse {
   status: TaskStatus;
   priority: TaskPriority;
   list: TaskListSummary | null;
+  cardId: number | null;
   parentTaskId: number | null;
   creator: UserSummary;
   assignee: UserSummary | null;
@@ -66,6 +67,7 @@ export interface TaskResponse {
   dueDate: string | null;
   completedAt: string | null;
   estimateMinutes: number | null;
+  points: number | null;
   recurrenceRule: string | null;
   sortOrder: number;
   isArchived: boolean;
@@ -90,6 +92,7 @@ export function toTaskResponse(
     status: task.status,
     priority: task.priority,
     list: task.list ? { id: task.list.id, name: task.list.name, color: task.list.color } : null,
+    cardId: task.cardId !== null ? Number(task.cardId) : null,
     parentTaskId: task.parentTaskId,
     creator: { id: task.creator.id, fullName: task.creator.fullName },
     assignee: task.assignee ? { id: task.assignee.id, fullName: task.assignee.fullName } : null,
@@ -97,6 +100,7 @@ export function toTaskResponse(
     dueDate: task.dueDate ? task.dueDate.toISOString() : null,
     completedAt: task.completedAt ? task.completedAt.toISOString() : null,
     estimateMinutes: task.estimateMinutes,
+    points: task.points,
     recurrenceRule: task.recurrenceRule,
     sortOrder: task.sortOrder,
     isArchived: task.isArchived,

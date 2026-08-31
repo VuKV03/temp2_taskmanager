@@ -39,14 +39,16 @@ export const TaskListPage = () => {
   const priority = searchParams.get('priority')?.split(',').filter(Boolean) as TaskPriority[] | undefined;
   const tagIds = searchParams.get('tagIds')?.split(',').filter(Boolean).map(Number);
   const q = searchParams.get('q') || undefined;
+  const sort = (searchParams.get('sort') ?? undefined) as TaskParams['sort'];
+  const order = (searchParams.get('order') ?? undefined) as TaskParams['order'];
 
-  const params: TaskParams = { page, limit, status, priority, tagIds, q, listId };
+  const params: TaskParams = { page, limit, status, priority, tagIds, q, sort, order, listId };
   const { data, isLoading, isError, refetch } = useTasks(params);
 
   // A row selection only makes sense for the page/filters it was made on.
   useEffect(() => {
     setSelectedIds(new Set());
-  }, [page, limit, status?.join(','), priority?.join(','), tagIds?.join(','), q, listId]);
+  }, [page, limit, status?.join(','), priority?.join(','), tagIds?.join(','), q, sort, order, listId]);
 
   const openDetail = (taskId: number) => navigate(ROUTES.TASK_DETAIL.replace(':id', String(taskId)));
 

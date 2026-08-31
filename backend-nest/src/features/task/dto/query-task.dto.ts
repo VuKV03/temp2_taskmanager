@@ -33,6 +33,11 @@ export class QueryTaskDto extends PaginationQueryDto {
   @IsOptional()
   @Type(() => Number)
   @IsInt()
+  cardId?: number;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
   assigneeId?: number;
 
   @IsOptional()

@@ -15,6 +15,7 @@ export const ROUTES = {
   LIST_DETAIL: '/lists/:id',
   STATISTIC: '/statistic',
   HISTORY: '/history',
+  RANDOM_DRAW: '/random-draw',
   PROFILE: '/profile',
 
   // Admin

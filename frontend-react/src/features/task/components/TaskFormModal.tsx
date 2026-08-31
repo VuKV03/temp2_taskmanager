@@ -5,6 +5,7 @@ import { z } from 'zod';
 import { DateTime } from 'luxon';
 import { Modal, Button, Input, Label, Textarea, Select } from '../../../shared/components/ui';
 import { useLists } from '../../../features/task-list';
+import { useTaskCards } from '../../../features/task-card';
 import { useCreateTask } from '../hooks/useCreateTask';
 import { useUpdateTask } from '../hooks/useUpdateTask';
 import { TagPicker } from './TagPicker';
@@ -15,9 +16,11 @@ const taskSchema = z.object({
   title: z.string().min(1, 'Vui lòng nhập tiêu đề').max(255),
   description: z.string().optional(),
   listId: z.string().optional(),
+  cardId: z.string().optional(),
   priority: z.enum(['low', 'medium', 'high', 'urgent']),
   dueDate: z.string().optional(),
   estimateMinutes: z.string().optional(),
+  points: z.string().min(1, 'Vui lòng nhập khối lượng (point)'),
 });
 
 type TaskFormValues = z.infer<typeof taskSchema>;
@@ -27,6 +30,8 @@ interface TaskFormModalProps {
   onClose: () => void;
   task?: Task;
   defaultListId?: number;
+  /** Pre-selects "Thẻ" for a new task — e.g. "Thêm việc" launched from inside a specific card. */
+  defaultCardId?: number;
   /** Datetime-local string (`yyyy-MM-dd'T'HH:mm`) to pre-fill "Hạn chót" for a new task — e.g. Today's "Thêm việc". */
   defaultDueDate?: string;
 }
@@ -36,9 +41,17 @@ function toDatetimeLocal(iso: string | null): string {
   return DateTime.fromISO(iso).toFormat("yyyy-MM-dd'T'HH:mm");
 }
 
-export const TaskFormModal = ({ open, onClose, task, defaultListId, defaultDueDate }: TaskFormModalProps) => {
+export const TaskFormModal = ({
+  open,
+  onClose,
+  task,
+  defaultListId,
+  defaultCardId,
+  defaultDueDate,
+}: TaskFormModalProps) => {
   const isEdit = !!task;
   const { data: lists } = useLists();
+  const { data: cards } = useTaskCards();
   const { mutate: createTask, isPending: isCreating } = useCreateTask();
   const { mutate: updateTask, isPending: isUpdating } = useUpdateTask();
   const isPending = isCreating || isUpdating;
@@ -56,9 +69,11 @@ export const TaskFormModal = ({ open, onClose, task, defaultListId, defaultDueDa
       title: task?.title ?? '',
       description: task?.description ?? '',
       listId: task?.list ? String(task.list.id) : defaultListId ? String(defaultListId) : '',
+      cardId: task?.cardId ? String(task.cardId) : defaultCardId ? String(defaultCardId) : '',
       priority: (task?.priority ?? 'medium') as TaskPriority,
       dueDate: task?.dueDate ? toDatetimeLocal(task.dueDate) : (defaultDueDate ?? ''),
       estimateMinutes: task?.estimateMinutes ? String(task.estimateMinutes) : '',
+      points: task?.points !== null && task?.points !== undefined ? String(task.points) : '',
     },
   });
 
@@ -73,9 +88,11 @@ export const TaskFormModal = ({ open, onClose, task, defaultListId, defaultDueDa
       title: values.title,
       description: values.description || undefined,
       listId: values.listId ? Number(values.listId) : null,
+      cardId: values.cardId ? Number(values.cardId) : null,
       priority: values.priority,
       dueDate: values.dueDate ? DateTime.fromISO(values.dueDate).toUTC().toISO()! : undefined,
       estimateMinutes: values.estimateMinutes ? Number(values.estimateMinutes) : undefined,
+      points: Number(values.points),
       // `t.id` comes back from the API as a numeric string (bigint), even though
       // `TagSummary.id` is typed `number` — normalize before sending, or the
       // backend's `@IsInt({ each: true })` on tagIds rejects the request.
@@ -130,12 +147,38 @@ export const TaskFormModal = ({ open, onClose, task, defaultListId, defaultDueDa
 
         <div className="grid grid-cols-2 gap-3">
           <div>
+            <Label htmlFor="task-card">Thẻ</Label>
+            <Select id="task-card" {...register('cardId')}>
+              <option value="">Không thuộc thẻ nào</option>
+              {cards?.map((card) => (
+                <option key={card.id} value={card.id}>
+                  {card.name}
+                </option>
+              ))}
+            </Select>
+          </div>
+          <div>
             <Label htmlFor="task-due-date">Hạn chót</Label>
             <Input id="task-due-date" type="datetime-local" {...register('dueDate')} />
           </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-3">
           <div>
             <Label htmlFor="task-estimate">Thời lượng (phút)</Label>
             <Input id="task-estimate" type="number" min={1} {...register('estimateMinutes')} />
+          </div>
+          <div>
+            <Label htmlFor="task-points">Khối lượng (point, 1 point ≈ 1 ngày)</Label>
+            <Input
+              id="task-points"
+              type="number"
+              min={0}
+              step={0.1}
+              error={!!errors.points}
+              {...register('points')}
+            />
+            {errors.points && <p className="mt-1 text-small text-red-600">{errors.points.message}</p>}
           </div>
         </div>
 

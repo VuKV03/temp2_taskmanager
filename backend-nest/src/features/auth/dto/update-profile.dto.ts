@@ -15,4 +15,11 @@ export class UpdateProfileDto {
   @IsString()
   @MaxLength(50)
   timezone?: string;
+
+  // Telegram numeric chat id, from @userinfobot or the bot's own
+  // `getUpdates` after the user presses Start. Empty string unlinks.
+  @IsOptional()
+  @IsString()
+  @MaxLength(64)
+  telegramChatId?: string;
 }

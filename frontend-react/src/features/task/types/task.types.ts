@@ -55,6 +55,7 @@ export interface Task {
   status: TaskStatus;
   priority: TaskPriority;
   list: TaskListSummary | null;
+  cardId: number | null;
   parentTaskId: number | null;
   creator: UserSummary;
   assignee: UserSummary | null;
@@ -62,6 +63,7 @@ export interface Task {
   dueDate: string | null;
   completedAt: string | null;
   estimateMinutes: number | null;
+  points: number | null;
   recurrenceRule: string | null;
   sortOrder: number;
   isArchived: boolean;
@@ -76,11 +78,12 @@ export interface Task {
 export interface TaskParams {
   page?: number;
   limit?: number;
-  sort?: 'dueDate' | 'priority' | 'createdAt' | 'updatedAt' | 'sortOrder';
+  sort?: 'dueDate' | 'priority' | 'createdAt' | 'updatedAt' | 'sortOrder' | 'points';
   order?: 'asc' | 'desc';
   status?: TaskStatus[];
   priority?: TaskPriority[];
   listId?: number;
+  cardId?: number;
   assigneeId?: number;
   tagIds?: number[];
   dueFrom?: string;
@@ -93,12 +96,14 @@ export interface CreateTaskPayload {
   title: string;
   description?: string;
   listId?: number | null;
+  cardId?: number | null;
   parentTaskId?: number;
   assigneeId?: number;
   priority?: TaskPriority;
   startDate?: string;
   dueDate?: string;
   estimateMinutes?: number;
+  points: number;
   recurrenceRule?: string;
   tagIds?: number[];
 }

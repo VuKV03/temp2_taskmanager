@@ -57,6 +57,7 @@ export const TaskTable = ({
             <th className="px-3 py-2 font-medium">Danh sách</th>
             <th className="px-3 py-2 font-medium">Trạng thái</th>
             <th className="px-3 py-2 font-medium">Ưu tiên</th>
+            <th className="px-3 py-2 font-medium">Điểm</th>
             <th className="px-3 py-2 font-medium">Hạn chót</th>
             <th className="px-3 py-2 font-medium">Hành động</th>
           </tr>
@@ -87,6 +88,7 @@ export const TaskTable = ({
               <td className="px-3 py-2">
                 <PriorityBadge priority={task.priority} />
               </td>
+              <td className="px-3 py-2 text-text-muted">{task.points ?? '—'}</td>
               <td className="px-3 py-2 text-text-muted">{task.dueDate ? formatDate(task.dueDate) : '—'}</td>
               <td className="px-3 py-2">
                 <div className="flex items-center gap-1">

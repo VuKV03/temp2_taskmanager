@@ -46,6 +46,10 @@ export const validationSchema = Joi.object({
     otherwise: Joi.optional(),
   }),
 
+  // Telegram (outbound notifications) — optional; TelegramService just logs
+  // a warning and no-ops sends if unset, never blocks app startup.
+  TELEGRAM_BOT_TOKEN: Joi.string().optional().allow(''),
+
   // App
   DEFAULT_TIMEZONE: Joi.string().default('Asia/Ho_Chi_Minh'),
   CORS_ORIGINS: Joi.string().default('http://localhost:5173'),

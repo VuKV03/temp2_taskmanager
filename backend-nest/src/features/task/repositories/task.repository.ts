@@ -126,6 +126,7 @@ export class TaskRepository {
       createdAt: 'task.createdAt',
       updatedAt: 'task.updatedAt',
       sortOrder: 'task.sortOrder',
+      points: 'task.points',
     };
     return sortColumnMap[sort ?? 'sortOrder'] ?? 'task.sortOrder';
   }
@@ -139,6 +140,9 @@ export class TaskRepository {
     }
     if (query.listId !== undefined) {
       qb.andWhere('task.listId = :listId', { listId: query.listId });
+    }
+    if (query.cardId !== undefined) {
+      qb.andWhere('task.cardId = :cardId', { cardId: query.cardId });
     }
     if (query.assigneeId !== undefined) {
       qb.andWhere('task.assigneeId = :assigneeId', { assigneeId: query.assigneeId });
@@ -203,6 +207,20 @@ export class TaskRepository {
 
   findByIds(ids: number[]): Promise<Task[]> {
     return this.repo.find({ where: { id: In(ids) } });
+  }
+
+  /**
+   * Lean `{id, title}` rows for a list, used by `random-draw` to snapshot a
+   * pool of tasks to draw from — no joins, capped since a session only ever
+   * needs the title text, never the full task shape.
+   */
+  findLeanByListId(listId: number): Promise<Pick<Task, 'id' | 'title'>[]> {
+    return this.repo.find({
+      where: { listId, isArchived: false },
+      select: { id: true, title: true },
+      order: { sortOrder: 'ASC' },
+      take: 1000,
+    });
   }
 
   /** Same as `findByIds` but with the response relations (list/creator/assignee/tags) joined. */

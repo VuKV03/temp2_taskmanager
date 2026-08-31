@@ -1,9 +1,11 @@
 import { useState } from 'react';
+import { Link } from 'react-router';
 import { LogOut, User as UserIcon, ChevronDown } from 'lucide-react';
 import { useAuthStore, useLogout } from '../../../features/auth';
 import { NotificationBell } from '../../../features/notification';
 import { ThemeToggle } from '../ui';
 import { cn } from '../../utils/cn';
+import { ROUTES } from '../../../routes/routes';
 
 export const Header = () => {
   const user = useAuthStore((s) => s.user);
@@ -43,7 +45,8 @@ export const Header = () => {
                 <p className="truncate text-small font-medium text-text">{user.fullName}</p>
                 <p className="truncate text-small text-text-muted">{user.email}</p>
               </div>
-              <button
+              <Link
+                to={ROUTES.PROFILE}
                 className={cn(
                   'flex w-full items-center gap-2 px-3 py-2 text-left text-small text-text hover:bg-background',
                 )}
@@ -51,7 +54,7 @@ export const Header = () => {
               >
                 <UserIcon className="h-4 w-4" />
                 Hồ sơ
-              </button>
+              </Link>
               <button
                 disabled={isPending}
                 onClick={() => logout()}

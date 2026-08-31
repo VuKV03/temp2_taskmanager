@@ -30,6 +30,7 @@ depend on it.
 - `GET /tasks/today` — Today's tasks by timezone (`X-Timezone` header overrides `users.timezone`)
 - `GET /tasks/overdue` — Overdue tasks
 - `GET /tasks/upcoming` — Next 7 days
+- **Not used by the frontend as of 2026-08-31** — the "Hôm nay" page was replaced by `task-card`'s manual, freely-named cards (`GET /tasks?cardId=X` instead). Left in place rather than deleted (nothing was asked to remove it, nothing else depends on it either way).
 
 ### Tags (`controllers/tag.controller.ts`)
 - `GET /tags`, `POST /tags`, `PATCH /tags/:id`, `DELETE /tags/:id`
@@ -50,11 +51,13 @@ depend on it.
 8. `completed_at` is the sole source of truth for completion stats, not `updated_at`
 9. Ownership: a task is accessible to its `creator`, its `assignee`, or an admin — `TASK_002` otherwise
 10. Every write on `tasks` logs one `task_activities` row in the same transaction (`ActivityLoggerService`, from the minimal `activity` module)
-11. Recurring tasks (rule #16): `recurrence_rule` acts as a "torch" held by exactly one row in a series. `RecurringTaskProcessor` (BullMQ, `recurring-tasks` queue, daily at 00:05 — `services/task-recurrence.service.ts`) finds every row still holding the torch whose `due_date` has passed, clones it into a **new** row (next occurrence's due date, same `recurrence_rule`), and clears `recurrence_rule` on the old row — the old row's `due_date` is never moved, matching the rule's wording exactly. A missed cron window (server down) catches up one occurrence per run on subsequent runs rather than ever double-booking a date. Next-occurrence math (`shared/utils/recurrence.util.ts`) supports the same subset `CreateTaskDto`'s `RRULE_PATTERN` validates: `FREQ=DAILY`, `FREQ=WEEKLY(;BYDAY=...)`, `FREQ=MONTHLY`.
+11. `cardId`/`points` (added 2026-08-31, see `task-card/CONTEXT.md`): `cardId` follows the exact same optional/nullable pattern as `listId` (own `resolveCardId` helper in `create()`, inline null-aware check in `update()` — **must** check for both `undefined` *and* `null`, not just `undefined`, since the frontend sends an explicit `null` for "no card"; passing a bare `null` into `TaskCardRepository.findById` throws a TypeORM error instead of just finding nothing, which is exactly the bug this cost). `points` is a required DTO field (decimal, `1 point = 1 day` by convention only, nothing enforced server-side) but a nullable DB column — existing rows predate it and stay `NULL`; the recurring-task clone copies it forward, `cardId` deliberately does not (a fresh occurrence starts off no card).
+12. Recurring tasks (rule #16): `recurrence_rule` acts as a "torch" held by exactly one row in a series. `RecurringTaskProcessor` (BullMQ, `recurring-tasks` queue, daily at 00:05 — `services/task-recurrence.service.ts`) finds every row still holding the torch whose `due_date` has passed, clones it into a **new** row (next occurrence's due date, same `recurrence_rule`), and clears `recurrence_rule` on the old row — the old row's `due_date` is never moved, matching the rule's wording exactly. A missed cron window (server down) catches up one occurrence per run on subsequent runs rather than ever double-booking a date. Next-occurrence math (`shared/utils/recurrence.util.ts`) supports the same subset `CreateTaskDto`'s `RRULE_PATTERN` validates: `FREQ=DAILY`, `FREQ=WEEKLY(;BYDAY=...)`, `FREQ=MONTHLY`.
 
 ## Dependencies
 
 - auth (`UserRepository` for assignee validation, `JwtAuthGuard`/`RolesGuard` globally)
 - task-list (`TaskListRepository` for `listId` ownership check)
+- task-card (`TaskCardRepository` for `cardId` ownership check — see rule 11)
 - activity (`ActivityLoggerService`, write-only)
 - core/queue (`BullModule`, for the recurring-task processor)

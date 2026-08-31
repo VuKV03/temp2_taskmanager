@@ -7,6 +7,7 @@ export interface User {
   avatarUrl: string | null;
   role: UserRole;
   timezone: string;
+  telegramChatId: string | null;
   isActive: boolean;
   lastLoginAt: string | null;
   createdAt: string;
@@ -33,6 +34,7 @@ export interface UpdateProfilePayload {
   fullName?: string;
   avatarUrl?: string;
   timezone?: string;
+  telegramChatId?: string;
 }
 
 export interface ChangePasswordPayload {

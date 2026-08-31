@@ -15,6 +15,8 @@ export const ERROR_CODES = {
   USER_003: { code: 'USER_003', message: 'Cannot deactivate your own account', status: 400 },
   USER_004: { code: 'USER_004', message: 'Old password incorrect', status: 400 },
   USER_005: { code: 'USER_005', message: 'Cannot delete the last admin', status: 400 },
+  USER_006: { code: 'USER_006', message: 'Telegram chat is not linked yet', status: 400 },
+  USER_007: { code: 'USER_007', message: 'Failed to send Telegram message', status: 502 },
 
   // List
   LIST_001: { code: 'LIST_001', message: 'List not found', status: 404 },
@@ -29,6 +31,10 @@ export const ERROR_CODES = {
   TASK_005: { code: 'TASK_005', message: 'Cannot complete: subtasks unfinished', status: 400 },
   TASK_006: { code: 'TASK_006', message: 'Assignee is inactive or not found', status: 400 },
   TASK_007: { code: 'TASK_007', message: 'Circular parent reference', status: 400 },
+
+  // Task card
+  CARD_001: { code: 'CARD_001', message: 'Card not found', status: 404 },
+  CARD_002: { code: 'CARD_002', message: 'Not the card owner', status: 403 },
 
   // Tag
   TAG_001: { code: 'TAG_001', message: 'Tag not found', status: 404 },
@@ -45,6 +51,13 @@ export const ERROR_CODES = {
 
   // Notification
   NOTIF_001: { code: 'NOTIF_001', message: 'Notification not found', status: 404 },
+
+  // Random draw
+  DRAW_001: { code: 'DRAW_001', message: 'Draw session not found', status: 404 },
+  DRAW_002: { code: 'DRAW_002', message: 'Not the draw session owner', status: 403 },
+  DRAW_003: { code: 'DRAW_003', message: 'Pool is empty, nothing left to draw', status: 400 },
+  DRAW_004: { code: 'DRAW_004', message: 'No items to draw from', status: 400 },
+  DRAW_005: { code: 'DRAW_005', message: 'Item is not in the pending pool', status: 400 },
 
   // System
   SYS_001: { code: 'SYS_001', message: 'Internal server error', status: 500 },

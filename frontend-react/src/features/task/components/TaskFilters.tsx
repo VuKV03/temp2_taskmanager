@@ -1,11 +1,22 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router';
 import { Search, X } from 'lucide-react';
-import { Input, FilterDropdown } from '../../../shared/components/ui';
+import { Input, FilterDropdown, Select } from '../../../shared/components/ui';
 import { useDebounce } from '../../../shared/hooks/useDebounce';
 import { useTags } from '../hooks/useTags';
 import { TASK_STATUS_LABEL, TASK_PRIORITY_LABEL } from '../types/task.types';
 import type { TaskStatus, TaskPriority } from '../types/task.types';
+
+// `value` packs `sort:order` into one <select> option so a single control
+// covers both "khối lượng" and "mới nhất" — no reason to force two dropdowns
+// for what's really one choice.
+const SORT_OPTIONS = [
+  { value: '', label: 'Mặc định' },
+  { value: 'createdAt:desc', label: 'Mới nhất' },
+  { value: 'createdAt:asc', label: 'Cũ nhất' },
+  { value: 'points:desc', label: 'Khối lượng: cao → thấp' },
+  { value: 'points:asc', label: 'Khối lượng: thấp → cao' },
+];
 
 const STATUS_OPTIONS = (Object.keys(TASK_STATUS_LABEL) as TaskStatus[]).map((value) => ({
   value,
@@ -23,6 +34,7 @@ export const TaskFilters = () => {
   const status = searchParams.get('status')?.split(',').filter(Boolean) ?? [];
   const priority = searchParams.get('priority')?.split(',').filter(Boolean) ?? [];
   const tagIds = searchParams.get('tagIds')?.split(',').filter(Boolean) ?? [];
+  const sortValue = searchParams.get('sort') ? `${searchParams.get('sort')}:${searchParams.get('order') ?? 'desc'}` : '';
 
   const [q, setQ] = useState(searchParams.get('q') ?? '');
   const debouncedQ = useDebounce(q, 400);
@@ -53,13 +65,29 @@ export const TaskFilters = () => {
 
   const tagOptions = (tags ?? []).map((tag) => ({ value: String(tag.id), label: tag.name }));
 
-  const hasFilters = status.length > 0 || priority.length > 0 || tagIds.length > 0 || !!q;
+  const hasFilters = status.length > 0 || priority.length > 0 || tagIds.length > 0 || !!q || !!sortValue;
+
+  const setSort = (value: string) => {
+    setSearchParams((prev) => {
+      const next = new URLSearchParams(prev);
+      const [sort, order] = value.split(':');
+      if (sort) {
+        next.set('sort', sort);
+        next.set('order', order);
+      } else {
+        next.delete('sort');
+        next.delete('order');
+      }
+      next.delete('page');
+      return next;
+    });
+  };
 
   const clearAll = () => {
     setQ('');
     setSearchParams((prev) => {
       const next = new URLSearchParams(prev);
-      ['status', 'priority', 'tagIds', 'q', 'page'].forEach((k) => next.delete(k));
+      ['status', 'priority', 'tagIds', 'q', 'sort', 'order', 'page'].forEach((k) => next.delete(k));
       return next;
     });
   };
@@ -99,6 +127,19 @@ export const TaskFilters = () => {
           onChange={(values) => updateListParam('tagIds', values)}
         />
       )}
+
+      <Select
+        value={sortValue}
+        onChange={(e) => setSort(e.target.value)}
+        className="h-9 w-44 py-0 text-small"
+        aria-label="Sắp xếp"
+      >
+        {SORT_OPTIONS.map((opt) => (
+          <option key={opt.value} value={opt.value}>
+            {opt.label}
+          </option>
+        ))}
+      </Select>
 
       {hasFilters && (
         <button

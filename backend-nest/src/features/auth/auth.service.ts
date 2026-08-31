@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { TelegramService } from '../../core/telegram/telegram.service.js';
 import { AppException } from '../../shared/exceptions/app.exception.js';
 import { ERROR_CODES } from '../../shared/constants/error-codes.constant.js';
 import { hashPassword, verifyPassword } from '../../shared/utils/hash.util.js';
@@ -41,6 +42,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
     private readonly eventEmitter: EventEmitter2,
+    private readonly telegramService: TelegramService,
   ) {}
 
   async register(dto: RegisterDto): Promise<UserResponse> {
@@ -179,8 +181,28 @@ export class AuthService {
     if (dto.fullName !== undefined) user.fullName = dto.fullName;
     if (dto.avatarUrl !== undefined) user.avatarUrl = dto.avatarUrl;
     if (dto.timezone !== undefined) user.timezone = dto.timezone;
+    // Blank string = unlink, matching how the frontend clears the field.
+    if (dto.telegramChatId !== undefined) user.telegramChatId = dto.telegramChatId.trim() || null;
     const saved = await this.userRepository.save(user);
     return toUserResponse(saved);
+  }
+
+  /** User-initiated "send me a test message" — unlike the event/cron-triggered sends, this one should surface a real error instead of failing silently. */
+  async sendTelegramTest(userId: number): Promise<void> {
+    const user = await this.userRepository.findById(userId);
+    if (!user) {
+      throw new AppException(ERROR_CODES.USER_001);
+    }
+    if (!user.telegramChatId) {
+      throw new AppException(ERROR_CODES.USER_006);
+    }
+    const sent = await this.telegramService.sendMessage(
+      user.telegramChatId,
+      `✅ Kết nối Telegram thành công! Từ giờ Task Manager sẽ báo cho bạn qua đây, ${user.fullName}.`,
+    );
+    if (!sent) {
+      throw new AppException(ERROR_CODES.USER_007);
+    }
   }
 
   async changePassword(userId: number, dto: ChangePasswordDto): Promise<void> {

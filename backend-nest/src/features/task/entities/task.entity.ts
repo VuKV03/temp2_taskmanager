@@ -13,6 +13,7 @@ import {
 } from 'typeorm';
 import type { Relation } from 'typeorm';
 import { TaskList } from '../../task-list/entities/task-list.entity.js';
+import { TaskCard } from '../../task-card/entities/task-card.entity.js';
 import { User } from '../../auth/entities/user.entity.js';
 import { Tag } from './tag.entity.js';
 import { TaskStatus, TaskPriority } from '../types/task.types.js';
@@ -31,6 +32,16 @@ export class Task {
   @ManyToOne(() => TaskList, { nullable: true })
   @JoinColumn({ name: 'list_id' })
   list: Relation<TaskList> | null;
+
+  // Independent from `list` — a task can be in a list *and* a card at the
+  // same time. See task-card/CONTEXT.md.
+  @Index('idx_tasks_card_id')
+  @Column({ name: 'card_id', type: 'bigint', nullable: true })
+  cardId: number | null;
+
+  @ManyToOne(() => TaskCard, { nullable: true, onDelete: 'SET NULL' })
+  @JoinColumn({ name: 'card_id' })
+  card: Relation<TaskCard> | null;
 
   @Index('idx_tasks_parent_task_id')
   @Column({ name: 'parent_task_id', type: 'bigint', nullable: true })
@@ -83,6 +94,24 @@ export class Task {
 
   @Column({ name: 'estimate_minutes', type: 'int', nullable: true })
   estimateMinutes: number | null;
+
+  // Workload in "points" — 1 point = 1 day, per user's own convention (no
+  // fixed real-world meaning enforced server-side). Decimal so half-days
+  // etc. work. mysql2 returns DECIMAL columns as strings by default; the
+  // transformer keeps `Task.points` a real JS number everywhere, instead of
+  // relying on every call site to remember to coerce it (see the bigint-id
+  // gotcha this same repo already hit more than once).
+  @Column({
+    type: 'decimal',
+    precision: 5,
+    scale: 2,
+    nullable: true,
+    transformer: {
+      to: (value: number | null) => value,
+      from: (value: string | null) => (value === null ? null : parseFloat(value)),
+    },
+  })
+  points: number | null;
 
   @Column({ name: 'recurrence_rule', type: 'varchar', length: 100, nullable: true })
   recurrenceRule: string | null;
